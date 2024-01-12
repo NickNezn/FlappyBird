@@ -7,8 +7,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="nameInputForm">
+        <label for="playerName">Enter your name:</label>
+        <input type="text" id="playerName" name="playerName">
+        <button id="startGameButton">Submit</button>
+    </div>
     <div id="gameContainer">
         <canvas id="gameCanvas"></canvas>
+        <div id="difficultyButtons">
+            <button id="easyButton">Easy</button>
+            <button id="mediumButton">Medium</button>
+            <button id="hardButton">Hard</button>
+        </div>
     </div>
     <div id="leaderboard">
         <h3>Leaderboard</h3>

@@ -21,7 +21,7 @@ const bird = {
 };
 
 // Load the bird image
-bird.image.src = 'flappybird.png'; // Make sure this path is correct
+bird.image.src = 'result.png'; // Make sure this path is correct
 
 // Game state variables
 let gameRunning = false;
@@ -33,13 +33,13 @@ const jumpSound = new Audio('jump.mp3');
 const crashSound = new Audio('dead.mp3');
 const pointSound = new Audio('point.mp3');
 bgMusic.loop = true; // Background music will loop
-bgMusic.volume = 0.1;
+bgMusic.volume = 0.05;
 
 // Pillar properties
 const pillars = [];
-const pillarWidth = 50;
-const gapHeight = 150;
-let pillarInterval = 2000;
+const pillarWidth = 105;
+const gapHeight = 160;
+let pillarInterval = 2500;
 let pillarTimer = 0;
 
 // Function to resize canvas
@@ -71,6 +71,22 @@ resizeCanvas();
 function drawStartButton() {
     drawButton('Start Game', canvas.width / 2, canvas.height / 2);
 }
+
+let gameSpeed = 3; 
+
+function setDifficulty(speed) {
+    gameSpeed = speed;
+    // You can also adjust other game parameters based on difficulty if desired
+}
+document.getElementById('easyButton').addEventListener('click', function() {
+    setDifficulty(2); // Slower speed for easy
+});
+document.getElementById('mediumButton').addEventListener('click', function() {
+    setDifficulty(4); // Medium speed
+});
+document.getElementById('hardButton').addEventListener('click', function() {
+    setDifficulty(6); // Faster speed for hard
+});
 
 // Function to draw button on canvas
 function drawButton(text, x, y) {
@@ -124,12 +140,19 @@ function drawInitialState() {
     drawStartButton(); // Draw the start button
 }
 
+document.getElementById('startGameButton').addEventListener('click', function() {
+    playerName = document.getElementById('playerName').value.trim();
+    if (!playerName) {
+        playerName = 'Anonymous'; // Default name if none entered
+    }
+    startGame();
+});
 // Function to update bird's position
 function updateBird() {
     bird.velocity += bird.gravity;
     bird.y += bird.velocity;
 
-    if (bird.y + bird.height > canvas.height || bird.y < 0) {
+    if (bird.y + bird.height > canvas.height) {
         endGame();
     }
 }
@@ -151,7 +174,7 @@ function drawPillars() {
         ctx.fillRect(pillar.x, 0, pillarWidth, pillar.top);
         ctx.fillRect(pillar.x, pillar.bottom, pillarWidth, canvas.height - pillar.bottom);
 
-        pillar.x -= 3;
+        pillar.x -= gameSpeed;
 
         if (pillar.x + pillarWidth < bird.x && !pillar.passed) {
             pillar.passed = true;
@@ -256,12 +279,13 @@ function endGame() {
     crashSound.play();
     bgMusic.pause();
     bgMusic.currentTime = 0;
-    showRestartButton(); // Display restart button
+    updateLeaderboard(score); // Update leaderboard with the final score
+    showRestartButton();
 }
+
 
 // Function to update and display the leaderboard
 function updateLeaderboard(newScore) {
-    const playerName = localStorage.getItem('playerName');
     let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
     leaderboard.push({ name: playerName, score: newScore });
     leaderboard.sort((a, b) => b.score - a.score);
@@ -269,6 +293,7 @@ function updateLeaderboard(newScore) {
     localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
     displayLeaderboard();
 }
+
 
 // Function to display the leaderboard
 function displayLeaderboard() {

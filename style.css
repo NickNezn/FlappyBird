@@ -2,8 +2,8 @@ body {
     height: 100vh;
     margin: 0;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: column; /* Align items in a row instead of a column */
+    justify-content: flex-start;
     align-items: center;
     background: #f0f0f0;
     background-image: url('https://cdn.techinasia.com/wp-content/uploads/2014/02/flappy-bird-10.jpg');
@@ -13,9 +13,46 @@ body {
     overflow: auto;
 }
 
+#nameInputForm {
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    margin-bottom: 20px;
+    z-index: 2;
+}
+
+#nameInputForm label {
+    display: block;
+    color: #333;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+#playerName {
+    font-size: 16px;
+    padding: 10px;
+    border: 2px solid #333;
+    border-radius: 5px;
+    width: 60%;
+    margin-bottom: 10px;
+}
+
+#startGameButton {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+
 #gameContainer {
     display: flex;
-    flex-direction: column;
     align-items: center;
     max-width: 100%;
 }
@@ -24,13 +61,49 @@ body {
     max-width: 90%;
     height: auto;
     border: 1px solid #000;
+    z-index: 1;
 }
 
 #leaderboard {
+    order: -1; /* Order -1 will place it before the canvas which has an implicit order of 0 */
     background: #f0f0f0;
     padding: 10px;
     border-radius: 5px;
     max-width: 200px;
-    margin-top: 20px;
     text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: Adds a subtle shadow */
+    margin-right: 20px; 
+    position: absolute; /* Position the leaderboard absolutely */
+    left: 0; /* Align to the left side */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Offset by half its height for true centering */
+    margin-left: 20px;
+}
+#gameContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 100%;
+}
+
+#difficultyButtons {
+    display: flex; /* Use flexbox to align children */
+    flex-direction: row; /* Align children horizontally */
+    position: absolute; /* Position absolutely to place them on the bottom right */
+    bottom: 20px; /* Position from the bottom of the viewport */
+    right: 20px; /* Add some space above the buttons */
+}
+
+#difficultyButtons button {
+    padding: 10px 20px;
+    margin-left: 10px; /* Add space between buttons */
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+#difficultyButtons button:hover {
+    background-color: #ddd;
 }
