@@ -173,6 +173,7 @@ function initGame() {
     resizeCanvas(); // Ensure canvas is correctly sized
     drawStartButton(); // Draw the start button
     addCanvasClickListener(); // Setup the click event listener
+    
 }
 // Function to draw initial state of the game
 function drawInitialState() {
@@ -188,13 +189,17 @@ document.getElementById('startGameButton').addEventListener('click', function() 
     }
     startGame();
 });
-function saveScore(playerName, score) {
-    var scoresRef = firebase.database().ref('scores');
+function saveScore(score) {
+    var database = firebase.database();
+    var scoresRef = database.ref('scores');
     scoresRef.push({
-      name: playerName,
+      playerName: 'Player',  // Replace with actual player name
       score: score
+    }).catch(function(error) {
+      console.error("Error saving score to Firebase: ", error);
     });
   }
+  
   
 
 canvas.addEventListener('click', function() {
@@ -343,13 +348,16 @@ function endGame() {
 
 // Function to update and display the leaderboard
 function updateLeaderboard(newScore) {
-    let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-    leaderboard.push({ name: playerName, score: newScore });
-    leaderboard.sort((a, b) => b.score - a.score);
-    leaderboard = leaderboard.slice(0, 3); // Keep only top 3 scores
-    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-    displayLeaderboard();
+    var database = firebase.database();
+    var scoresRef = database.ref('scores');
+    scoresRef.push({
+        playerName: playerName,
+        score: newScore
+    }).catch(function(error) {
+        console.error("Error saving score to Firebase: ", error);
+    });
 }
+
 
 
 // Function to display the leaderboard
