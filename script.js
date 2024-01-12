@@ -369,6 +369,16 @@ function displayLeaderboard() {
       }
     });
   }
+  function displayHighScores() {
+    var scoresRef = firebase.database().ref('scores').orderByChild('score').limitToLast(10);
+    scoresRef.on('value', function(snapshot) {
+      snapshot.forEach(function(childSnapshot) {
+        var childData = childSnapshot.val();
+        console.log(childData); // Check if data is being retrieved
+        // Code to display scores
+      });
+    });
+  }
   
 
 
