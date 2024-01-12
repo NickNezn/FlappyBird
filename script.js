@@ -12,9 +12,9 @@ bgImage.src = 'background.jpg'; // Make sure this path is correct
 // Bird properties
 const bird = {
     x: 25,
-    y: 75,
-    width: 30,
-    height: 30,
+    y: 50,
+    width: 40,
+    height: 40,
     gravity: 0.25,
     velocity: 0,
     image: new Image()
@@ -37,8 +37,8 @@ bgMusic.volume = 0.05;
 
 // Pillar properties
 const pillars = [];
-const pillarWidth = 105;
-const gapHeight = 160;
+const pillarWidth = 100;
+const gapHeight = 150;
 let pillarInterval = 2500;
 let pillarTimer = 0;
 
@@ -69,25 +69,32 @@ resizeCanvas();
 
 // Function to draw start button
 function drawStartButton() {
-    drawButton('Start Game', canvas.width / 2, canvas.height / 2);
+    drawButton('Choose Difficulty', canvas.width / 2, canvas.height / 2);
 }
 
-let gameSpeed = 3; 
+let gameSpeed; 
 
-function setDifficulty(speed) {
-    gameSpeed = speed;
-    // You can also adjust other game parameters based on difficulty if desired
+const baseSpeeds = {
+    easy: 2,
+    medium: 6,
+    hard: 20
+};
+
+function setDifficulty(difficulty) {
+    gameSpeed = baseSpeeds[difficulty];
+    // Other game difficulty settings can go here
 }
+
+// Event listeners for difficulty buttons
 document.getElementById('easyButton').addEventListener('click', function() {
-    setDifficulty(2); // Slower speed for easy
+    setDifficulty('easy');
 });
 document.getElementById('mediumButton').addEventListener('click', function() {
-    setDifficulty(4); // Medium speed
+    setDifficulty('medium');
 });
 document.getElementById('hardButton').addEventListener('click', function() {
-    setDifficulty(6); // Faster speed for hard
+    setDifficulty('hard');
 });
-
 // Function to draw button on canvas
 function drawButton(text, x, y) {
     const buttonWidth = 200;
@@ -105,13 +112,47 @@ function drawButton(text, x, y) {
     ctx.fillText(text, textX, textY);
 }
 
+let lastSpeedIncreaseScore = 0;
+
+function adjustGameSpeed() {
+    // Check if we have reached a new point and not already increased the speed for this score
+    if (score > lastSpeedIncreaseScore) {
+        gameSpeed += 1; // Adjust the value as needed for gradual increase
+        lastSpeedIncreaseScore = score; // Remember the score at which we last increased the speed
+    }
+}
+
+function updateActiveButton(activeButtonId) {
+    const buttons = document.querySelectorAll('#difficultyButtons button');
+    buttons.forEach(button => {
+        if (button.id === activeButtonId) {
+            button.classList.add('active-difficulty');
+        } else {
+            button.classList.remove('active-difficulty');
+        }
+    });
+}
+
+document.getElementById('easyButton').addEventListener('click', function() {
+    setDifficulty('easy');
+    updateActiveButton('easyButton');
+});
+document.getElementById('mediumButton').addEventListener('click', function() {
+    setDifficulty('medium');
+    updateActiveButton('mediumButton');
+});
+document.getElementById('hardButton').addEventListener('click', function() {
+    setDifficulty('hard');
+    updateActiveButton('hardButton');
+});
+
 
 
 
 
 document.addEventListener('keydown', function(event) {
     if (event.code === 'Space' && gameRunning) {
-        bird.velocity = -5;
+        bird.velocity = -6;
         jumpSound.play();
     }
 });
@@ -146,6 +187,21 @@ document.getElementById('startGameButton').addEventListener('click', function() 
         playerName = 'Anonymous'; // Default name if none entered
     }
     startGame();
+});
+function saveScore(playerName, score) {
+    var scoresRef = firebase.database().ref('scores');
+    scoresRef.push({
+      name: playerName,
+      score: score
+    });
+  }
+  
+
+canvas.addEventListener('click', function() {
+    if (gameRunning) {
+        bird.velocity = -6; // Adjust the value as needed for the jump strength
+        jumpSound.play();
+    }
 });
 // Function to update bird's position
 function updateBird() {
@@ -205,6 +261,7 @@ function gameLoop(timestamp) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
 
+    adjustGameSpeed(); // Adjust game speed based on score
     updateBird();
     drawBird();
 
@@ -297,14 +354,22 @@ function updateLeaderboard(newScore) {
 
 // Function to display the leaderboard
 function displayLeaderboard() {
-    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-    leaderboardList.innerHTML = ''; // Clear existing entries
-    leaderboard.forEach(entry => {
-        const li = document.createElement('li');
-        li.textContent = `${entry.name}: ${entry.score}`;
+    var scoresRef = firebase.database().ref('scores').orderByChild('score').limitToLast(10);
+    scoresRef.on('value', function(snapshot) {
+      var scores = snapshot.val();
+      // Clear existing leaderboard
+      var leaderboardList = document.getElementById('leaderboardList');
+      leaderboardList.innerHTML = '';
+  
+      // Update leaderboard with new scores
+      for (var key in scores) {
+        var li = document.createElement('li');
+        li.textContent = `${scores[key].name}: ${scores[key].score}`;
         leaderboardList.appendChild(li);
+      }
     });
-}
+  }
+  
 
 
 

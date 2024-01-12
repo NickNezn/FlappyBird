@@ -89,9 +89,8 @@ body {
 #difficultyButtons {
     display: flex; /* Use flexbox to align children */
     flex-direction: row; /* Align children horizontally */
-    position: absolute; /* Position absolutely to place them on the bottom right */
-    bottom: 20px; /* Position from the bottom of the viewport */
-    right: 20px; /* Add some space above the buttons */
+    justify-content: center; /* Center the buttons */
+    margin-top: 10px; /* Space above the buttons */
 }
 
 #difficultyButtons button {
@@ -106,4 +105,9 @@ body {
 
 #difficultyButtons button:hover {
     background-color: #ddd;
+}
+.active-difficulty {
+    box-shadow: 0 0 10px 2px #4CAF50; /* Glowing effect */
+    /* Or simply change the background color */
+    /* background-color: #4CAF50; */
 }
