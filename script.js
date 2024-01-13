@@ -330,7 +330,7 @@ function addCanvasClickListener() {
 
 
 
-// restart game
+
 function endGame() {
     gameRunning = false;
     crashSound.play();
@@ -340,6 +340,22 @@ function endGame() {
     showRestartButton();
 }
 
+const volumeSlider = document.getElementById('volumeSlider');
+
+
+function adjustVolume() {
+    const volume = volumeSlider.value;
+    bgMusic.volume = volume;
+    jumpSound.volume = volume;
+    crashSound.volume = volume;
+    pointSound.volume = volume;
+}
+
+
+volumeSlider.addEventListener('input', adjustVolume);
+
+
+adjustVolume();
 
 
 function updateLeaderboard(newScore) {

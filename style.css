@@ -110,3 +110,8 @@ body {
     box-shadow: 0 0 10px 2px #4CAF50; /* Glowing eff */
     
 }
+#volumeControl {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
