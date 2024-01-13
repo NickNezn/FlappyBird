@@ -2,7 +2,7 @@ body {
     height: 100vh;
     margin: 0;
     display: flex;
-    flex-direction: column; /* Align items in a row instead of a column */
+    flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     background: #f0f0f0;
@@ -14,7 +14,7 @@ body {
 }
 
 #nameInputForm {
-    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+    background: rgba(255, 255, 255, 0.8); 
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -65,18 +65,18 @@ body {
 }
 
 #leaderboard {
-    order: -1; /* Order -1 will place it before the canvas which has an implicit order of 0 */
+    order: -1; 
     background: #f0f0f0;
     padding: 10px;
     border-radius: 5px;
     max-width: 200px;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: Adds a subtle shadow */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     margin-right: 20px; 
-    position: absolute; /* Position the leaderboard absolutely */
-    left: 0; /* Align to the left side */
-    top: 50%; /* Center vertically */
-    transform: translateY(-50%); /* Offset by half its height for true centering */
+    position: absolute; 
+    left: 0; 
+    top: 50%; 
+    transform: translateY(-50%); 
     margin-left: 20px;
 }
 #gameContainer {
@@ -87,15 +87,15 @@ body {
 }
 
 #difficultyButtons {
-    display: flex; /* Use flexbox to align children */
-    flex-direction: row; /* Align children horizontally */
-    justify-content: center; /* Center the buttons */
-    margin-top: 10px; /* Space above the buttons */
+    display: flex; 
+    flex-direction: row;
+    justify-content: center; 
+    margin-top: 10px; 
 }
 
 #difficultyButtons button {
     padding: 10px 20px;
-    margin-left: 10px; /* Add space between buttons */
+    margin-left: 10px; 
     cursor: pointer;
     font-size: 16px;
     border-radius: 5px;
@@ -107,7 +107,6 @@ body {
     background-color: #ddd;
 }
 .active-difficulty {
-    box-shadow: 0 0 10px 2px #4CAF50; /* Glowing effect */
-    /* Or simply change the background color */
-    /* background-color: #4CAF50; */
+    box-shadow: 0 0 10px 2px #4CAF50; /* Glowing eff */
+    
 }

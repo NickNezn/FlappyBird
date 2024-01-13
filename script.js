@@ -1,15 +1,15 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Set the canvas dimensions
+
 canvas.width = 1200;
 canvas.height = 800;
 
-// Load background image
-const bgImage = new Image();
-bgImage.src = 'background.jpg'; // Make sure this path is correct
 
-// Bird properties
+const bgImage = new Image();
+bgImage.src = 'background.jpg'; 
+
+
 const bird = {
     x: 25,
     y: 50,
@@ -20,10 +20,10 @@ const bird = {
     image: new Image()
 };
 
-// Load the bird image
-bird.image.src = 'result.png'; // Make sure this path is correct
 
-// Game state variables
+bird.image.src = 'result.png';
+
+
 let gameRunning = false;
 let score = 0;
 let playerName = '';
@@ -32,24 +32,24 @@ const bgMusic = new Audio('background.mp3');
 const jumpSound = new Audio('jump.mp3');
 const crashSound = new Audio('dead.mp3');
 const pointSound = new Audio('point.mp3');
-bgMusic.loop = true; // Background music will loop
+bgMusic.loop = true; 
 bgMusic.volume = 0.05;
 
-// Pillar properties
+
 const pillars = [];
 const pillarWidth = 100;
 const gapHeight = 150;
 let pillarInterval = 2500;
 let pillarTimer = 0;
 
-// Function to resize canvas
+
 function resizeCanvas() {
-    var maxWidth = 1200; // Maximum canvas width
-    var maxHeight = 800; // Maximum canvas height
+    var maxWidth = 1200; 
+    var maxHeight = 800; 
     var aspectRatio = maxWidth / maxHeight;
 
-    var newWidth = window.innerWidth - 40; // 20px padding on each side
-    var newHeight = window.innerHeight - 100; // Extra space for buttons
+    var newWidth = window.innerWidth - 40; 
+    var newHeight = window.innerHeight - 100; 
 
     if (newWidth > maxWidth) newWidth = maxWidth;
     if (newHeight > maxHeight) newHeight = maxHeight;
@@ -62,12 +62,12 @@ function resizeCanvas() {
 
     canvas.width = newWidth;
     canvas.height = newHeight;
-    drawInitialState(); // Redraw the initial state when resized
+    drawInitialState(); 
 }
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-// Function to draw start button
+
 function drawStartButton() {
     drawButton('Start Game', canvas.width / 2, canvas.height / 2);
 }
@@ -109,11 +109,11 @@ document.getElementById('hardButton').addEventListener('click', function() {
 
 function setDifficulty(difficulty) {
     gameSpeed = baseSpeeds[difficulty];
-    // Other game difficulty settings can go here
+    
 }
 
 
-// Event listeners for difficulty buttons
+
 document.getElementById('easyButton').addEventListener('click', function() {
     setDifficulty('easy');
 });
@@ -123,7 +123,7 @@ document.getElementById('mediumButton').addEventListener('click', function() {
 document.getElementById('hardButton').addEventListener('click', function() {
     setDifficulty('hard');
 });
-// Function to draw button on canvas
+
 function drawButton(text, x, y) {
     const buttonWidth = 200;
     const buttonHeight = 50;
@@ -136,17 +136,17 @@ function drawButton(text, x, y) {
     ctx.fillStyle = 'white';
     ctx.font = '20px Arial';
     const textX = buttonX + (buttonWidth - ctx.measureText(text).width) / 2;
-    const textY = buttonY + (buttonHeight / 2) + 6; // Adjusting vertical alignment
+    const textY = buttonY + (buttonHeight / 2) + 6; 
     ctx.fillText(text, textX, textY);
 }
 
 let lastSpeedIncreaseScore = 0;
 
 function adjustGameSpeed() {
-    // Check if we have reached a new point and not already increased the speed for this score
+    
     if (score > lastSpeedIncreaseScore) {
-        gameSpeed += 1; // Adjust the value as needed for gradual increase
-        lastSpeedIncreaseScore = score; // Remember the score at which we last increased the speed
+        gameSpeed += 1; 
+        lastSpeedIncreaseScore = score; 
     }
 }
 
@@ -158,7 +158,7 @@ document.addEventListener('keydown', function(event) {
         jumpSound.play();
     }
 });
-// Function to start the game
+
 function startGame() {
     if (!gameRunning) {
     gameRunning = true;
@@ -172,25 +172,25 @@ function startGame() {
 }
 
 function initGame() {
-    resizeCanvas(); // Ensure canvas is correctly sized
-    drawStartButton(); // Draw the start button
-    addCanvasClickListener(); // Setup the click event listener
+    resizeCanvas();
+    drawStartButton(); 
+    addCanvasClickListener(); 
 }
-// Function to draw initial state of the game
+
 function drawInitialState() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
-    drawStartButton(); // Draw the start button
+    drawStartButton(); 
 }
 
 document.getElementById('startGameButton').addEventListener('click', function() {
     playerName = document.getElementById('playerName').value.trim();
     if (!playerName) {
-        playerName = 'Anonymous'; // Default name if none entered
+        playerName = 'Anonymous'; 
     }
     startGame();
 });
-// Function to update bird's position
+
 function updateBird() {
     bird.velocity += bird.gravity;
     bird.y += bird.velocity;
@@ -200,17 +200,17 @@ function updateBird() {
     }
 }
 
-// Function to draw the bird
+
 function drawBird() {
     ctx.drawImage(bird.image, bird.x, bird.y, bird.width, bird.height);
 }
-// Function to add a new pillar
+
 function addPillar() {
     const gapPosition = (gapHeight / 2) + (Math.random() * (canvas.height - gapHeight));
     pillars.push({ x: canvas.width, top: gapPosition - gapHeight, bottom: gapPosition, passed: false });
 }
 
-// Function to draw pillars and increment score
+
 function drawPillars() {
     pillars.forEach((pillar, index) => {
         ctx.fillStyle = '#8FBC8F';
@@ -231,7 +231,7 @@ function drawPillars() {
     });
 }
 
-// Check for collision
+
 function checkCollision() {
     for (let pillar of pillars) {
         if (bird.x < pillar.x + pillarWidth &&
@@ -243,12 +243,12 @@ function checkCollision() {
     return false;
 }
 
-// Game loop
+
 function gameLoop(timestamp) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
 
-    adjustGameSpeed(); // Adjust game speed based on score
+    adjustGameSpeed(); 
     updateBird();
     drawBird();
 
@@ -269,28 +269,28 @@ function gameLoop(timestamp) {
     }
 }
 
-// End game function
+
 function endGame() {
     gameRunning = false;
     crashSound.play();
     bgMusic.pause();
     bgMusic.currentTime = 0;
-    updateLeaderboard(score); // Update leaderboard with the final score
+    updateLeaderboard(score); 
     showRestartButton();
 }
 
 
-// Function to draw score
+
 function drawScore() {
-    ctx.fillStyle = 'black'; // Set the text color
-    ctx.font = '24px Arial'; // Set the font
+    ctx.fillStyle = 'black'; 
+    ctx.font = '24px Arial'; 
     const textWidth = ctx.measureText(`Score: ${score}`).width;
     const xPosition = (canvas.width - textWidth) / 2;
-    const yPosition = 30; // You can adjust this value as needed
+    const yPosition = 30; 
     ctx.fillText(`Score: ${score}`, xPosition, yPosition);
 }
 
-// Function to draw restart button
+
 function drawRestartButton() {
     drawButton('Restart Game', canvas.width / 2, canvas.height / 2);
 
@@ -301,7 +301,7 @@ function showRestartButton() {
     drawButton('Restart Game', canvas.width / 2, canvas.height / 2);
 }
 
-// Function to add event listener for canvas clicks
+
 function addCanvasClickListener() {
     canvas.addEventListener('click', function() {
         if (!gameRunning) {
@@ -317,32 +317,32 @@ function addCanvasClickListener() {
 
 
 
-// Function to restart the game
+// restart game
 function endGame() {
     gameRunning = false;
     crashSound.play();
     bgMusic.pause();
     bgMusic.currentTime = 0;
-    updateLeaderboard(score); // Update leaderboard with the final score
+    updateLeaderboard(score); 
     showRestartButton();
 }
 
 
-// Function to update and display the leaderboard
+
 function updateLeaderboard(newScore) {
     let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
     leaderboard.push({ name: playerName, score: newScore });
     leaderboard.sort((a, b) => b.score - a.score);
-    leaderboard = leaderboard.slice(0, 3); // Keep only top 3 scores
+    leaderboard = leaderboard.slice(0, 5); // Keep only top 5
     localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
     displayLeaderboard();
 }
 
 
-// Function to display the leaderboard
+
 function displayLeaderboard() {
     const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-    leaderboardList.innerHTML = ''; // Clear existing entries
+    leaderboardList.innerHTML = ''; 
     leaderboard.forEach(entry => {
         const li = document.createElement('li');
         li.textContent = `${entry.name}: ${entry.score}`;
@@ -353,5 +353,5 @@ function displayLeaderboard() {
 
 
 
-// Initialize game
+
 initGame();
