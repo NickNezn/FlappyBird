@@ -159,6 +159,19 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+function birdJump() {
+    bird.velocity = -6;
+    jumpSound.play();
+}
+
+
+canvas.addEventListener('touchstart', function(event) {
+    if (gameRunning) {
+        birdJump();
+    }
+    event.preventDefault(); 
+}, { passive: false });
+
 function startGame() {
     if (!gameRunning) {
     gameRunning = true;
