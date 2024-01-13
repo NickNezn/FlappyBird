@@ -1,3 +1,7 @@
+
+
+
+
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -69,7 +73,7 @@ resizeCanvas();
 
 // Function to draw start button
 function drawStartButton() {
-    drawButton('Choose Difficulty', canvas.width / 2, canvas.height / 2);
+    drawButton('Start Game', canvas.width / 2, canvas.height / 2);
 }
 
 let gameSpeed; 
@@ -80,10 +84,38 @@ const baseSpeeds = {
     hard: 20
 };
 
+function updateActiveButton(activeButtonId) {
+    const buttons = document.querySelectorAll('#difficultyButtons button');
+    buttons.forEach(button => {
+        if (button.id === activeButtonId) {
+            button.classList.add('active-difficulty');
+        } else {
+            button.classList.remove('active-difficulty');
+        }
+    });
+}
+
+document.getElementById('easyButton').addEventListener('click', function() {
+    setDifficulty('easy');
+    updateActiveButton('easyButton');
+});
+document.getElementById('mediumButton').addEventListener('click', function() {
+    setDifficulty('medium');
+    updateActiveButton('mediumButton');
+});
+document.getElementById('hardButton').addEventListener('click', function() {
+    setDifficulty('hard');
+    updateActiveButton('hardButton');
+});
+
+
+
+
 function setDifficulty(difficulty) {
     gameSpeed = baseSpeeds[difficulty];
     // Other game difficulty settings can go here
 }
+
 
 // Event listeners for difficulty buttons
 document.getElementById('easyButton').addEventListener('click', function() {
@@ -122,32 +154,6 @@ function adjustGameSpeed() {
     }
 }
 
-function updateActiveButton(activeButtonId) {
-    const buttons = document.querySelectorAll('#difficultyButtons button');
-    buttons.forEach(button => {
-        if (button.id === activeButtonId) {
-            button.classList.add('active-difficulty');
-        } else {
-            button.classList.remove('active-difficulty');
-        }
-    });
-}
-
-document.getElementById('easyButton').addEventListener('click', function() {
-    setDifficulty('easy');
-    updateActiveButton('easyButton');
-});
-document.getElementById('mediumButton').addEventListener('click', function() {
-    setDifficulty('medium');
-    updateActiveButton('mediumButton');
-});
-document.getElementById('hardButton').addEventListener('click', function() {
-    setDifficulty('hard');
-    updateActiveButton('hardButton');
-});
-
-
-
 
 
 document.addEventListener('keydown', function(event) {
@@ -173,7 +179,6 @@ function initGame() {
     resizeCanvas(); // Ensure canvas is correctly sized
     drawStartButton(); // Draw the start button
     addCanvasClickListener(); // Setup the click event listener
-    
 }
 // Function to draw initial state of the game
 function drawInitialState() {
@@ -188,25 +193,6 @@ document.getElementById('startGameButton').addEventListener('click', function() 
         playerName = 'Anonymous'; // Default name if none entered
     }
     startGame();
-});
-function saveScore(score) {
-    var database = firebase.database();
-    var scoresRef = database.ref('scores');
-    scoresRef.push({
-      playerName: 'Player',  // Replace with actual player name
-      score: score
-    }).catch(function(error) {
-      console.error("Error saving score to Firebase: ", error);
-    });
-  }
-  
-  
-
-canvas.addEventListener('click', function() {
-    if (gameRunning) {
-        bird.velocity = -6; // Adjust the value as needed for the jump strength
-        jumpSound.play();
-    }
 });
 // Function to update bird's position
 function updateBird() {
@@ -348,46 +334,35 @@ function endGame() {
 
 // Function to update and display the leaderboard
 function updateLeaderboard(newScore) {
-    var database = firebase.database();
-    var scoresRef = database.ref('scores');
-    scoresRef.push({
-        playerName: playerName,
-        score: newScore
-    }).catch(function(error) {
-        console.error("Error saving score to Firebase: ", error);
-    });
+    const db = getDatabase();
+    const leaderboardRef = ref(db, 'leaderboard/' + playerName);
+    set(leaderboardRef, { name: playerName, score: newScore })
+        .then(() => {
+            console.log("Leaderboard updated.");
+            displayLeaderboard(); // Refresh leaderboard display
+        })
+        .catch((error) => {
+            console.error("Error updating leaderboard: ", error);
+        });
 }
-
 
 
 // Function to display the leaderboard
 function displayLeaderboard() {
-    var scoresRef = firebase.database().ref('scores').orderByChild('score').limitToLast(10);
-    scoresRef.on('value', function(snapshot) {
-      var scores = snapshot.val();
-      // Clear existing leaderboard
-      var leaderboardList = document.getElementById('leaderboardList');
-      leaderboardList.innerHTML = '';
-  
-      // Update leaderboard with new scores
-      for (var key in scores) {
-        var li = document.createElement('li');
-        li.textContent = `${scores[key].name}: ${scores[key].score}`;
-        leaderboardList.appendChild(li);
-      }
+    const db = getDatabase();
+    const topScoresQuery = query(ref(db, 'leaderboard'), limitToLast(3));
+    
+    onValue(topScoresQuery, (snapshot) => {
+        const leaderboardList = document.getElementById('leaderboardList');
+        leaderboardList.innerHTML = ''; // Clear existing entries
+        snapshot.forEach((childSnapshot) => {
+            const entry = childSnapshot.val();
+            const li = document.createElement('li');
+            li.textContent = `${entry.name}: ${entry.score}`;
+            leaderboardList.appendChild(li);
+        });
     });
-  }
-  function displayHighScores() {
-    var scoresRef = firebase.database().ref('scores').orderByChild('score').limitToLast(10);
-    scoresRef.on('value', function(snapshot) {
-      snapshot.forEach(function(childSnapshot) {
-        var childData = childSnapshot.val();
-        console.log(childData); // Check if data is being retrieved
-        // Code to display scores
-      });
-    });
-  }
-  
+}
 
 
 
