@@ -1,7 +1,3 @@
-
-
-
-
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -334,33 +330,23 @@ function endGame() {
 
 // Function to update and display the leaderboard
 function updateLeaderboard(newScore) {
-    const db = getDatabase();
-    const leaderboardRef = ref(db, 'leaderboard/' + playerName);
-    set(leaderboardRef, { name: playerName, score: newScore })
-        .then(() => {
-            console.log("Leaderboard updated.");
-            displayLeaderboard(); // Refresh leaderboard display
-        })
-        .catch((error) => {
-            console.error("Error updating leaderboard: ", error);
-        });
+    let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+    leaderboard.push({ name: playerName, score: newScore });
+    leaderboard.sort((a, b) => b.score - a.score);
+    leaderboard = leaderboard.slice(0, 3); // Keep only top 3 scores
+    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+    displayLeaderboard();
 }
 
 
 // Function to display the leaderboard
 function displayLeaderboard() {
-    const db = getDatabase();
-    const topScoresQuery = query(ref(db, 'leaderboard'), limitToLast(3));
-    
-    onValue(topScoresQuery, (snapshot) => {
-        const leaderboardList = document.getElementById('leaderboardList');
-        leaderboardList.innerHTML = ''; // Clear existing entries
-        snapshot.forEach((childSnapshot) => {
-            const entry = childSnapshot.val();
-            const li = document.createElement('li');
-            li.textContent = `${entry.name}: ${entry.score}`;
-            leaderboardList.appendChild(li);
-        });
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+    leaderboardList.innerHTML = ''; // Clear existing entries
+    leaderboard.forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = `${entry.name}: ${entry.score}`;
+        leaderboardList.appendChild(li);
     });
 }
 
