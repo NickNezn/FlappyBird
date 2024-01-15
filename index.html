@@ -37,11 +37,17 @@
         <label for="volumeSlider">Volume:</label>
         <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
     </div>
+    
+    
     <div id="nameInputForm">
         <label for="playerName">Enter your name:</label>
         <input type="text" id="playerName" name="playerName">
         <button id="startGameButton">Submit</button>
-        
+        <div id="birdSelection">
+            <button id="bird1Button"><img src="mayo.jpg" alt="Bird 1"></button>
+            <button id="bird2Button"><img src="dano.jpg" alt="Bird 2"></button>
+            <button id="bird3Button"><img src="DAVID.jpg" alt="Bird 3"></button>
+        </div>
         
         <div id="difficultyButtons">
             <button id="easyButton">Easy</button>
@@ -52,6 +58,7 @@
     <div id="gameContainer">
         <canvas id="gameCanvas"></canvas>
     </div>
+    
     <div id="leaderboard">
         <h3>Leaderboard</h3>
         <ol id="leaderboardList">

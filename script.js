@@ -29,9 +29,9 @@ let score = 0;
 let playerName = '';
 
 const bgMusic = new Audio('background.mp3');
-const jumpSound = new Audio('jump.mp3');
-const crashSound = new Audio('dead.mp3');
-const pointSound = new Audio('point.mp3');
+const jumpSound = new Audio('bruh.mp3');
+const crashSound = new Audio('defeat.mp3');
+const pointSound = new Audio('wmn.mp3');
 bgMusic.loop = true; 
 bgMusic.volume = 0.05;
 
@@ -154,13 +154,14 @@ function adjustGameSpeed() {
 
 document.addEventListener('keydown', function(event) {
     if (event.code === 'Space' && gameRunning) {
-        bird.velocity = -6;
-        jumpSound.play();
+        
+        birdJump();
     }
 });
 
 function birdJump() {
     bird.velocity = -6;
+    jumpSound.currentTime = 0;
     jumpSound.play();
 }
 
@@ -222,6 +223,7 @@ function addPillar() {
     const gapPosition = (gapHeight / 2) + (Math.random() * (canvas.height - gapHeight));
     pillars.push({ x: canvas.width, top: gapPosition - gapHeight, bottom: gapPosition, passed: false });
 }
+
 
 
 function drawPillars() {
@@ -356,6 +358,17 @@ volumeSlider.addEventListener('input', adjustVolume);
 
 
 adjustVolume();
+
+// Event listeners for bird selection buttons
+document.getElementById('bird1Button').addEventListener('click', function() {
+    bird.image.src = 'mayo.jpg'; // Replace with actual path
+});
+document.getElementById('bird2Button').addEventListener('click', function() {
+    bird.image.src = 'dano.jpg'; // Replace with actual path
+});
+document.getElementById('bird3Button').addEventListener('click', function() {
+    bird.image.src = 'david.jpg'; // Replace with actual path
+});
 
 
 function updateLeaderboard(newScore) {
