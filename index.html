@@ -15,6 +15,7 @@
           get,
           query,
           orderByChild,
+          equalTo,
           limitToLast
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
       
@@ -33,7 +34,7 @@
       
         // Make Firebase DB available globally to script.js
         window.firebaseDB = db;
-        window.firebaseRefs = { ref, push, set, get, query, orderByChild, limitToLast };
+        window.firebaseRefs = { ref, push, set, get, query, orderByChild, equalTo, limitToLast };
       </script>
       
 </head>
@@ -57,7 +58,7 @@
         <div id="difficultyButtons">
             <button id="easyButton">Easy</button>
             <button id="mediumButton">Medium</button>
-            <button id="hardButton">IMPOSSIBLE</button>
+            <button id="hardButton">Hard</button>
         </div>
     </div>
 
@@ -69,9 +70,20 @@
 
     <div id="leaderboard">
         <h3>Leaderboard</h3>
-        <ol id="leaderboardList"></ol>
+        <div>
+            <h4>Easy Mode</h4>
+            <ul id="easyLeaderboard">Loading...</ul>
+        </div>
+        <div>
+            <h4>Medium Mode</h4>
+            <ul id="mediumLeaderboard">Loading...</ul>
+        </div>
+        <div>
+            <h4>Hard Mode</h4>
+            <ul id="hardLeaderboard">Loading...</ul>
+        </div>
     </div>
-
+    
     <!-- ✅ HTML Restart Button -->
     <button id="restartButton">Restart Game</button>
 

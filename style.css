@@ -14,13 +14,17 @@ body {
 }
 
 #nameInputForm {
-    background: rgba(255, 255, 255, 0.8); 
+    background: rgba(255, 255, 255, 0.8);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-align: center;
     margin-bottom: 20px;
     z-index: 2;
+    -webkit-user-select: none; /* Chrome/Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE/Edge */
+    user-select: none;  
 }
 
 #nameInputForm label {
@@ -48,8 +52,11 @@ body {
     cursor: pointer;
     font-size: 18px;
     transition: background-color 0.3s;
+    -webkit-user-select: none; /* Chrome, Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE/Edge */
+    user-select: none;
 }
-
 
 #gameContainer {
     display: flex;
@@ -65,20 +72,55 @@ body {
 }
 
 #leaderboard {
-    order: -1; 
-    background: #f0f0f0;
-    padding: 10px;
-    border-radius: 5px;
-    max-width: 200px;
+    order: -1;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 350px;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    margin-right: 20px; 
-    position: absolute; 
-    left: 0; 
-    top: 50%; 
-    transform: translateY(-50%); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
     margin-left: 20px;
+    z-index: 2;
+    color: white;
+    font-family: 'Arial', sans-serif;
+
+    /* Disables text selection inside the leaderboard */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
+
+#leaderboard h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.mode-leaderboard {
+    margin-bottom: 20px;
+}
+
+.mode-leaderboard h4 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    text-decoration: underline;
+}
+
+#leaderboard ol {
+    padding-left: 0;
+    list-style-type: none;
+    font-size: 18px;
+}
+
+#leaderboard li {
+    padding: 5px 0;
+    border-bottom: 1px solid #444;
+}
+
 #gameContainer {
     display: flex;
     flex-direction: column;
@@ -87,15 +129,21 @@ body {
 }
 
 #difficultyButtons {
-    display: flex; 
+    display: flex;
     flex-direction: row;
-    justify-content: center; 
-    margin-top: 10px; 
+    justify-content: center;
+    margin-top: 10px;
+
+    /* Disables text selection on difficulty buttons */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #difficultyButtons button {
     padding: 10px 20px;
-    margin-left: 10px; 
+    margin-left: 10px;
     cursor: pointer;
     font-size: 16px;
     border-radius: 5px;
@@ -106,10 +154,11 @@ body {
 #difficultyButtons button:hover {
     background-color: #ddd;
 }
+
 .active-difficulty {
-    box-shadow: 0 0 10px 2px #4CAF50; /* Glowing eff */
-    
+    box-shadow: 0 0 10px 2px #4CAF50; /* Glowing effect */
 }
+
 #volumeControl {
     position: absolute;
     top: 20px;
@@ -135,7 +184,7 @@ body {
     background: #ddd;
     border-radius: 10px;
     outline: none;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2); /* Shadow effect */
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
     transition: background 0.3s;
 }
 
@@ -171,23 +220,39 @@ body {
     background: #bbb;
 }
 
-
-
 #birdSelection {
     text-align: center;
     margin-bottom: 10px;
+
+    /* Prevent highlighting in the bird selection area */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #birdSelection button {
     background: none;
     border: none;
     cursor: pointer;
+    /* If you also want to ensure no selection on the buttons themselves: */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #birdSelection img {
-    width: 50px; /* Adjust as needed */
+    width: 50px; 
     height: auto;
+    /* If icons themselves are being highlighted, also do: */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
+
+
 #restartButton {
     display: none;
     position: absolute;
@@ -203,6 +268,7 @@ body {
     cursor: pointer;
     z-index: 3;
 }
+
 #startHtmlButton {
     display: none;
     position: absolute;
@@ -218,6 +284,7 @@ body {
     cursor: pointer;
     z-index: 3;
 }
+
 #birdSelection button.selected img {
     border: 3px solid #4CAF50;
     border-radius: 8px;

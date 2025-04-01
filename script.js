@@ -40,7 +40,20 @@ const gapHeight = 200;
 let pillarInterval = 2500;
 let pillarTimer = 0;
 
-const baseSpeeds = { easy: 2, medium: 6, hard: 20 };
+// Define pillar intervals for each difficulty
+const pillarIntervals = {
+    easy: 2500,       // Pillar spawn interval for Easy mode
+    medium: 1800,     // Shorter pillar spawn interval for Medium mode
+    hard: 1200        // Even shorter pillar spawn interval for Hard mode
+};
+
+// Define base speeds for each difficulty
+const baseSpeeds = {
+    easy: 2,          // Slow initial speed for Easy mode
+    medium: 4,        // Faster initial speed for Medium mode
+    hard: 6           // Faster initial speed for Hard mode
+};
+
 let gameSpeed = baseSpeeds.easy;
 let lastScoreSpeedIncrement = 0;
 
@@ -50,8 +63,11 @@ function resizeCanvas() {
     let newHeight = window.innerHeight - 100;
     if (newWidth > maxWidth) newWidth = maxWidth;
     if (newHeight > maxHeight) newHeight = maxHeight;
-    if (newWidth / newHeight > aspectRatio) newWidth = newHeight * aspectRatio;
-    else newHeight = newWidth / aspectRatio;
+    if (newWidth / newHeight > aspectRatio) {
+        newWidth = newHeight * aspectRatio;
+    } else {
+        newHeight = newWidth / aspectRatio;
+    }
     canvas.width = newWidth;
     canvas.height = newHeight;
     drawInitialState();
@@ -66,9 +82,13 @@ function drawInitialState() {
 }
 
 function drawButton(text, x, y) {
-    const width = 200, height = 50, bx = x - width / 2, by = y - height / 2;
+    const width = 200, height = 50;
+    const bx = x - width / 2;
+    const by = y - height / 2;
+
     ctx.fillStyle = '#4CAF50';
     ctx.fillRect(bx, by, width, height);
+
     ctx.fillStyle = 'white';
     ctx.font = '20px Arial';
     const textX = bx + (width - ctx.measureText(text).width) / 2;
@@ -79,6 +99,7 @@ function drawButton(text, x, y) {
 function setDifficulty(level) {
     difficulty = level;
     gameSpeed = baseSpeeds[level];
+    pillarInterval = pillarIntervals[level];
     lastScoreSpeedIncrement = 0;
     document.querySelectorAll('#difficultyButtons button').forEach(btn =>
         btn.classList.toggle('active-difficulty', btn.id === `${level}Button`)
@@ -125,11 +146,24 @@ function birdJump() {
     sounds.jump.play();
 }
 
-document.addEventListener('keydown', e => e.code === 'Space' && gameRunning && birdJump());
-canvas.addEventListener('touchstart', e => {
-    if (gameRunning) birdJump();
-    e.preventDefault();
-}, { passive: false });
+// ✅ Spacebar jump
+document.addEventListener('keydown', e => {
+    if (e.code === 'Space' && gameRunning) {
+        birdJump();
+    }
+});
+
+// ✅ Canvas click to jump
+function addCanvasClickListener() {
+    canvas.addEventListener('click', () => {
+        if (!gameRunning) {
+            startGame();
+        } else {
+            // If game is already running, jump
+            birdJump();
+        }
+    });
+}
 
 function updateBird() {
     bird.velocity += bird.gravity;
@@ -148,42 +182,37 @@ function addPillar() {
 
 function drawPillars() {
     pillars.forEach((p, i) => {
-        // Set a gradient color for the pillars
         const pillarGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        pillarGradient.addColorStop(0, '#66ff66');  // Lighter green at the top
-        pillarGradient.addColorStop(1, '#1eb141');  // Darker green at the bottom
+        pillarGradient.addColorStop(0, '#66ff66');
+        pillarGradient.addColorStop(1, '#1eb141');
 
         ctx.fillStyle = pillarGradient;
-        // Draw the top part of the pillar
         ctx.fillRect(p.x, 0, pillarWidth, p.top);
-
-        // Draw the bottom part of the pillar
         ctx.fillRect(p.x, p.bottom, pillarWidth, canvas.height - p.bottom);
 
-        // Add shadow effect for more depth
+        // Shadows for effect
         ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
         ctx.shadowBlur = 10;
         ctx.shadowOffsetX = 3;
         ctx.shadowOffsetY = 3;
-
-        // Remove shadow after drawing the pillar to avoid affecting other elements
         ctx.shadowColor = 'transparent';
 
-        // Pillar movement
+        // Move pillars
         p.x -= gameSpeed;
 
-        // Score increment when passing a pillar
+        // Scoring logic
         if (!p.passed && p.x + pillarWidth < bird.x) {
             p.passed = true;
             score++;
             sounds.point.play();
         }
 
-        // Remove pillars when they move off-screen
-        if (p.x + pillarWidth < 0) pillars.splice(i, 1);
+        // Remove off-screen pillars
+        if (p.x + pillarWidth < 0) {
+            pillars.splice(i, 1);
+        }
     });
 }
-
 
 function checkCollision() {
     return pillars.some(p =>
@@ -193,8 +222,8 @@ function checkCollision() {
     );
 }
 
-let lastPillarSpawnTime = 0;  // Track the last time a pillar was spawned
-let pillarSpeed = 2;          // Starting speed of pillar movement
+let lastPillarSpawnTime = 0;
+let pillarSpeed = 2;
 
 function gameLoop(timestamp) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -202,10 +231,8 @@ function gameLoop(timestamp) {
     updateBird();
     drawBird();
 
-    // Adjust the pillar movement speed based on gameSpeed
     pillarSpeed = gameSpeed;
 
-    // Spawn pillars at fixed intervals, independent of game speed
     if (timestamp - lastPillarSpawnTime > pillarInterval) {
         addPillar();
         lastPillarSpawnTime = timestamp;
@@ -214,20 +241,27 @@ function gameLoop(timestamp) {
     drawPillars();
     drawScore();
 
-    // Gradually increase the speed over time, but keep pillar distance the same
+    // Increase speed over time
     if (difficulty === 'easy') {
-        if (timestamp - lastScoreSpeedIncrement > 1000) { // Increase speed every second
-            gameSpeed += 0.01;  // Gradual increase of game speed
-            lastScoreSpeedIncrement = timestamp;  // Reset the timer
+        if (timestamp - lastScoreSpeedIncrement > 1000) {
+            gameSpeed += 0.01;
+            lastScoreSpeedIncrement = timestamp;
+        }
+    } else if (difficulty === 'medium') {
+        if (timestamp - lastScoreSpeedIncrement > 900) {
+            gameSpeed += 0.02;
+            lastScoreSpeedIncrement = timestamp;
+        }
+    } else if (difficulty === 'hard') {
+        if (timestamp - lastScoreSpeedIncrement > 700) {
+            gameSpeed += 0.03;
+            lastScoreSpeedIncrement = timestamp;
         }
     }
 
     if (checkCollision()) endGame();
     if (gameRunning) requestAnimationFrame(gameLoop);
 }
-
-
-
 
 function drawScore() {
     ctx.fillStyle = 'black';
@@ -254,46 +288,65 @@ function updateLeaderboard(newScore) {
     set(newEntry, {
         name: playerName,
         score: newScore,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        difficulty: difficulty
     });
 }
 
 function displayLeaderboard() {
-    const { ref, get, query, orderByChild, limitToLast } = window.firebaseRefs;
+    const { ref, get, query, orderByChild, equalTo, limitToLast } = window.firebaseRefs;
     const db = window.firebaseDB;
 
-    const list = document.getElementById('leaderboardList');
-    if (!list) return; // If leaderboard doesn't exist yet, skip
-    list.innerHTML = 'Loading...'; // Show loading message
+    const easyList   = document.getElementById('easyLeaderboard');
+    const mediumList = document.getElementById('mediumLeaderboard');
+    const hardList   = document.getElementById('hardLeaderboard');
 
-    // Query the scores, ordered by score, limiting to the last 5 entries
-    const scoresRef = query(ref(db, 'scores'), orderByChild('score'), limitToLast(5));
+    easyList.innerHTML = 'Loading...';
+    mediumList.innerHTML = 'Loading...';
+    hardList.innerHTML   = 'Loading...';
 
-    get(scoresRef).then(snapshot => {
-        const entries = [];
-        snapshot.forEach(child => {
-            entries.push(child.val()); // Push all entries into the array
+    const easyScoresRef   = query(ref(db, 'scores'), orderByChild('difficulty'), equalTo('easy'));
+    const mediumScoresRef = query(ref(db, 'scores'), orderByChild('difficulty'), equalTo('medium'));
+    const hardScoresRef   = query(ref(db, 'scores'), orderByChild('difficulty'), equalTo('hard'));
+
+    function renderLeaderboard(list, scoresRef, mode) {
+        get(scoresRef).then(snapshot => {
+            const entries = [];
+            snapshot.forEach(child => {
+                entries.push(child.val());
+            });
+
+            if (entries.length === 0) {
+                list.innerHTML = `No entries yet for ${mode}`;
+                return;
+            }
+
+            entries.sort((a, b) => b.score - a.score);
+            list.innerHTML = '';
+
+            entries.slice(0, 5).forEach(entry => {
+                const li = document.createElement('li');
+                li.textContent = `${entry.name}: ${entry.score}`;
+                list.appendChild(li);
+            });
+        }).catch(err => {
+            list.innerHTML = `Error loading leaderboard for ${mode}`;
+            console.error(`[Leaderboard ERROR - ${mode}]`, err);
         });
+    }
 
-        entries.sort((a, b) => b.score - a.score); // Sort by score in descending order
-
-        list.innerHTML = ''; // Clear the leaderboard before appending new entries
-        entries.forEach(entry => {
-            const li = document.createElement('li');
-            li.textContent = `${entry.name}: ${entry.score}`; // Display name and score
-            list.appendChild(li);
-        });
-    }).catch(err => {
-        list.innerHTML = 'Error loading leaderboard'; // Show error message if query fails
-        console.error('[Leaderboard ERROR]', err); // Log the error for debugging
-    });
+    renderLeaderboard(easyList,   easyScoresRef,   'Easy');
+    renderLeaderboard(mediumList, mediumScoresRef, 'Medium');
+    renderLeaderboard(hardList,   hardScoresRef,   'Hard');
 }
 
-
 function addCanvasClickListener() {
+    // ✅ Canvas click to jump or start game
     canvas.addEventListener('click', () => {
         if (!gameRunning) {
             startGame();
+        } else {
+            birdJump();
         }
     });
 }
@@ -321,29 +374,35 @@ function adjustVolume() {
 
 document.addEventListener('DOMContentLoaded', function () {
     const volumeSlider = document.getElementById('volumeSlider');
-    volumeSlider.value = 0.1;  // Set to 10% by default
-    adjustVolume();  // Ensure volume is adjusted on page load
+    volumeSlider.value = 0.1;
+    adjustVolume();
+    volumeSlider.addEventListener('input', adjustVolume);
 
-    volumeSlider.addEventListener('input', adjustVolume); // Adjust volume when slider is moved
+    // Try to load saved player name from localStorage
+    const savedName = localStorage.getItem('playerName');
+    if (savedName) {
+        document.getElementById('playerName').value = savedName;
+        playerName = savedName;
+    }
 });
 
-function adjustVolume() {
-    const volume = document.getElementById('volumeSlider').value;
-    Object.values(sounds).forEach(sound => {
-        sound.volume = volume; // Apply the volume to each sound
-    });
-}
-
-document.getElementById('volumeSlider').addEventListener('input', adjustVolume);
-adjustVolume();
-
 document.getElementById('startGameButton').addEventListener('click', () => {
-    playerName = document.getElementById('playerName').value.trim() || 'Anonymous';
+    const inputName = document.getElementById('playerName').value.trim();
+    playerName = inputName || 'Anonymous';
+
+    // Save name to localStorage
+    localStorage.setItem('playerName', playerName);
+
     startGame();
 });
 
 document.getElementById('startHtmlButton').addEventListener('click', () => {
-    playerName = document.getElementById('playerName').value.trim() || 'Anonymous';
+    const inputName = document.getElementById('playerName').value.trim();
+    playerName = inputName || 'Anonymous';
+
+    // Save name to localStorage
+    localStorage.setItem('playerName', playerName);
+
     startGame();
 });
 
@@ -362,7 +421,7 @@ function initGame() {
     resizeCanvas();
     drawInitialState();
     addCanvasClickListener();
-    setTimeout(displayLeaderboard, 300); // Wait to ensure Firebase is ready
+    setTimeout(displayLeaderboard, 300);
 }
 
 initGame();
