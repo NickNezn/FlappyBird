@@ -148,23 +148,42 @@ function addPillar() {
 
 function drawPillars() {
     pillars.forEach((p, i) => {
-        ctx.fillStyle = '#8FBC8F';
+        // Set a gradient color for the pillars
+        const pillarGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        pillarGradient.addColorStop(0, '#66ff66');  // Lighter green at the top
+        pillarGradient.addColorStop(1, '#1eb141');  // Darker green at the bottom
+
+        ctx.fillStyle = pillarGradient;
+        // Draw the top part of the pillar
         ctx.fillRect(p.x, 0, pillarWidth, p.top);
+
+        // Draw the bottom part of the pillar
         ctx.fillRect(p.x, p.bottom, pillarWidth, canvas.height - p.bottom);
+
+        // Add shadow effect for more depth
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetX = 3;
+        ctx.shadowOffsetY = 3;
+
+        // Remove shadow after drawing the pillar to avoid affecting other elements
+        ctx.shadowColor = 'transparent';
+
+        // Pillar movement
         p.x -= gameSpeed;
+
+        // Score increment when passing a pillar
         if (!p.passed && p.x + pillarWidth < bird.x) {
             p.passed = true;
             score++;
             sounds.point.play();
-
-            if (difficulty === 'easy' && score > lastScoreSpeedIncrement) {
-                gameSpeed += 0.05;
-                lastScoreSpeedIncrement = score;
-            }
         }
+
+        // Remove pillars when they move off-screen
         if (p.x + pillarWidth < 0) pillars.splice(i, 1);
     });
 }
+
 
 function checkCollision() {
     return pillars.some(p =>
@@ -174,20 +193,41 @@ function checkCollision() {
     );
 }
 
+let lastPillarSpawnTime = 0;  // Track the last time a pillar was spawned
+let pillarSpeed = 2;          // Starting speed of pillar movement
+
 function gameLoop(timestamp) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
     updateBird();
     drawBird();
-    if (timestamp - pillarTimer > pillarInterval) {
+
+    // Adjust the pillar movement speed based on gameSpeed
+    pillarSpeed = gameSpeed;
+
+    // Spawn pillars at fixed intervals, independent of game speed
+    if (timestamp - lastPillarSpawnTime > pillarInterval) {
         addPillar();
-        pillarTimer = timestamp;
+        lastPillarSpawnTime = timestamp;
     }
+
     drawPillars();
     drawScore();
+
+    // Gradually increase the speed over time, but keep pillar distance the same
+    if (difficulty === 'easy') {
+        if (timestamp - lastScoreSpeedIncrement > 1000) { // Increase speed every second
+            gameSpeed += 0.01;  // Gradual increase of game speed
+            lastScoreSpeedIncrement = timestamp;  // Reset the timer
+        }
+    }
+
     if (checkCollision()) endGame();
     if (gameRunning) requestAnimationFrame(gameLoop);
 }
+
+
+
 
 function drawScore() {
     ctx.fillStyle = 'black';
@@ -226,6 +266,7 @@ function displayLeaderboard() {
     if (!list) return; // If leaderboard doesn't exist yet, skip
     list.innerHTML = 'Loading...'; // Show loading message
 
+    // Query the scores, ordered by score, limiting to the last 5 entries
     const scoresRef = query(ref(db, 'scores'), orderByChild('score'), limitToLast(5));
 
     get(scoresRef).then(snapshot => {
@@ -277,6 +318,22 @@ function adjustVolume() {
     const vol = document.getElementById('volumeSlider').value;
     Object.values(sounds).forEach(s => s.volume = vol);
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    const volumeSlider = document.getElementById('volumeSlider');
+    volumeSlider.value = 0.1;  // Set to 10% by default
+    adjustVolume();  // Ensure volume is adjusted on page load
+
+    volumeSlider.addEventListener('input', adjustVolume); // Adjust volume when slider is moved
+});
+
+function adjustVolume() {
+    const volume = document.getElementById('volumeSlider').value;
+    Object.values(sounds).forEach(sound => {
+        sound.volume = volume; // Apply the volume to each sound
+    });
+}
+
 document.getElementById('volumeSlider').addEventListener('input', adjustVolume);
 adjustVolume();
 
