@@ -420,6 +420,7 @@ document.getElementById('restartButton').addEventListener('click', restartGame);
 function initGame() {
     resizeCanvas();
     drawInitialState();
+    showStartButton();
     addCanvasClickListener();
     setTimeout(displayLeaderboard, 300);
 }
