@@ -223,28 +223,31 @@ function displayLeaderboard() {
     const db = window.firebaseDB;
 
     const list = document.getElementById('leaderboardList');
-    if (!list) return;
-    list.innerHTML = 'Loading...';
+    if (!list) return; // If leaderboard doesn't exist yet, skip
+    list.innerHTML = 'Loading...'; // Show loading message
 
     const scoresRef = query(ref(db, 'scores'), orderByChild('score'), limitToLast(5));
 
     get(scoresRef).then(snapshot => {
         const entries = [];
-        snapshot.forEach(child => entries.push(child.val()));
+        snapshot.forEach(child => {
+            entries.push(child.val()); // Push all entries into the array
+        });
 
-        entries.sort((a, b) => b.score - a.score);
+        entries.sort((a, b) => b.score - a.score); // Sort by score in descending order
 
-        list.innerHTML = '';
+        list.innerHTML = ''; // Clear the leaderboard before appending new entries
         entries.forEach(entry => {
             const li = document.createElement('li');
-            li.textContent = `${entry.name}: ${entry.score}`;
+            li.textContent = `${entry.name}: ${entry.score}`; // Display name and score
             list.appendChild(li);
         });
     }).catch(err => {
-        list.innerHTML = 'Error loading leaderboard';
-        console.error('[Leaderboard ERROR]', err);
+        list.innerHTML = 'Error loading leaderboard'; // Show error message if query fails
+        console.error('[Leaderboard ERROR]', err); // Log the error for debugging
     });
 }
+
 
 function addCanvasClickListener() {
     canvas.addEventListener('click', () => {
