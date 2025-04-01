@@ -11,9 +11,59 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     overflow: auto;
-}
-
-#nameInputForm {
+  }
+  
+  /* #sideContainer pinned top-right */
+  #sideContainer {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 2;
+  
+    display: flex;
+    flex-direction: column; /* stack items vertically */
+    gap: 15px;              /* space between Shop & Achievements */
+  
+    max-width: 220px;       /* limit width */
+  }
+  
+  /* Shop in normal flow inside #sideContainer */
+  #shopContainer {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 16px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    text-align: center;
+  }
+  
+  /* Achievements also normal block in #sideContainer, below Shop */
+  #achievementsContainer {
+    background: rgba(255,255,255,0.8);
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    text-align: center;
+  }
+  
+  #achievementsList {
+    list-style: none;
+    padding-left: 0;
+    font-size: 14px;
+    text-align: left;
+    margin: 0;  /* optional */
+  }
+  
+  /* If you want to scale them down for smaller screens, use media query: */
+  @media (max-width: 900px) {
+    #sideContainer {
+      transform: scale(0.85);
+      transform-origin: top right;
+    }
+  }
+  
+  /* The rest: nameInputForm, difficultyButtons, gameContainer, leaderboard, etc. */
+  
+  #nameInputForm {
     background: rgba(255, 255, 255, 0.8);
     padding: 20px;
     border-radius: 10px;
@@ -21,29 +71,23 @@ body {
     text-align: center;
     margin-bottom: 20px;
     z-index: 2;
-    -webkit-user-select: none; /* Chrome/Safari */
-    -moz-user-select: none;    /* Firefox */
-    -ms-user-select: none;     /* IE/Edge */
-    user-select: none;  
-}
-
-#nameInputForm label {
+    user-select: none;
+  }
+  #nameInputForm label {
     display: block;
     color: #333;
     font-size: 20px;
     margin-bottom: 10px;
-}
-
-#playerName {
+  }
+  #playerName {
     font-size: 16px;
     padding: 10px;
     border: 2px solid #333;
     border-radius: 5px;
     width: 60%;
     margin-bottom: 10px;
-}
-
-#startGameButton {
+  }
+  #startGameButton {
     padding: 10px 20px;
     background-color: #4CAF50;
     color: white;
@@ -52,159 +96,93 @@ body {
     cursor: pointer;
     font-size: 18px;
     transition: background-color 0.3s;
-    -webkit-user-select: none; 
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-#difficultyButtons {
+  }
+  #difficultyButtons {
     display: flex;
-    flex-direction: row;
     justify-content: center;
     margin-top: 10px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
-}
-#difficultyButtons button {
+  }
+  #difficultyButtons button {
     padding: 10px 20px;
     margin-left: 10px;
     cursor: pointer;
     font-size: 16px;
     border-radius: 5px;
     border: none;
-    transition: background-color 0.3s;
-}
-#difficultyButtons button:hover {
+  }
+  #difficultyButtons button:hover {
     background-color: #ddd;
-}
-.active-difficulty {
+  }
+  .active-difficulty {
     box-shadow: 0 0 10px 2px #4CAF50;
-}
-
-/* Normal (desktop-ish) styling for the Shop */
-#shopContainer {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 2;
-  
-    max-width: 220px;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 16px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    text-align: center;
   }
   
-  /* Make the shop smaller/narrower for phone-size screens */
-  @media (max-width: 900px) {
-    #shopContainer {
-      max-width: 180px;       /* narrower container */
-      padding: 10px;          /* less padding */
-    }
-    
-    /* Optionally scale the entire shop down slightly */
-    /* transform-origin keeps it pinned top-right corner while scaling */
-    #shopContainer {
-      transform: scale(0.85);
-      transform-origin: top right;
-    }
-    #shopSkins {
-        flex-wrap: wrap;
-      }
-      #shopSkins button {
-        width: 80px;
-        margin: 5px;
-      }
-      
-  }
-  
-
-  
-#shopSkins {
+  #shopSkins {
     display: flex;
-    flex-wrap: wrap;   /* let items wrap to next line if needed */
-    gap: 6px;          /* smaller gap */
+    flex-wrap: wrap;
+    gap: 6px;
     justify-content: center;
-}
-
-  
-.skinItem {
+  }
+  .skinItem {
     display: inline-block;
     text-align: center;
-    margin: 4px; /* smaller margin */
-}
-
-.skinItem button {
+    margin: 4px;
+  }
+  .skinItem button {
     display: inline-block;
-    width: 90px;               /* narrower button */
+    width: 90px;
     margin: 0 auto;
-    padding: 8px;              /* a bit less padding */
+    padding: 8px;
     border: 2px solid #ccc;
     border-radius: 8px;
     background: #fff;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
     transition: transform 0.3s, background-color 0.3s;
-    font-size: 13px;           /* slightly smaller text */
+    font-size: 13px;
     color: #333;
     text-align: center;
-}
-
-.skinItem button img {
+  }
+  .skinItem button img {
     display: block;
     margin: 4px auto 0 auto;
-    width: 32px;    /* smaller icon */
+    width: 32px;
     height: auto;
-}
-
-  
-  /* The error message is hidden by default */
+  }
   .errorMsg {
-    display: none;   /* hidden by default */
+    display: none;
     color: red;
     margin-top: 5px;
     font-size: 0.9em;
   }
-  
-  /* Example if user hovers a skin button */
   .skinItem button:hover {
     transform: scale(1.05);
     background-color: #f8f8f8;
   }
-  
-  /* When the user has purchased/equipped the skin => highlight */
   .skinItem button.selected {
     border-color: #4CAF50;
     background-color: #E7FFE7;
     box-shadow: 0 0 8px #4CAF50;
   }
   
-
-
-#gameContainer {
+  /* Game container & canvas */
+  #gameContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
     max-width: 100%;
-    /* No absolute positioning here */
-    /* The canvas stays in the center as before */
-}
-
-
-#gameCanvas {
+  }
+  #gameCanvas {
     max-width: 90%;
     height: auto;
     border: 1px solid #000;
     z-index: 1;
-}
-
-#leaderboard {
-    order: -1;
-    background: rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Leaderboard pinned left middle */
+  #leaderboard {
+    background: rgba(0,0,0,0.5);
     padding: 20px;
     border-radius: 10px;
     max-width: 350px;
@@ -218,26 +196,24 @@ body {
     z-index: 2;
     color: white;
     font-family: 'Arial', sans-serif;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
-}
-#leaderboard h3 {
+  }
+  #leaderboard h3 {
     font-size: 24px;
     margin-bottom: 15px;
-}
-#leaderboard ul {
+  }
+  #leaderboard ul {
     padding-left: 0;
     list-style-type: none;
     font-size: 18px;
-}
-#leaderboard li {
+  }
+  #leaderboard li {
     padding: 5px 0;
     border-bottom: 1px solid #444;
-}
-
-#volumeControl {
+  }
+  
+  /* Volume slider */
+  #volumeControl {
     position: absolute;
     top: 20px;
     left: 20px;
@@ -246,14 +222,14 @@ body {
     flex-direction: column;
     align-items: flex-start;
     z-index: 2;
-}
-#volumeControl label {
+  }
+  #volumeControl label {
     margin-bottom: 5px;
     color: white;
     font-weight: bold;
     font-size: 20px;
-}
-#volumeSlider {
+  }
+  #volumeSlider {
     width: 350px;
     height: 15px;
     -webkit-appearance: none;
@@ -262,8 +238,8 @@ body {
     outline: none;
     box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
     transition: background 0.3s;
-}
-#volumeSlider::-webkit-slider-thumb {
+  }
+  #volumeSlider::-webkit-slider-thumb {
     -webkit-appearance: none;
     height: 30px;
     width: 30px;
@@ -272,26 +248,27 @@ body {
     cursor: pointer;
     box-shadow: 0 0 5px rgba(0,0,0,0.2);
     transition: background 0.3s;
-}
-#volumeSlider::-webkit-slider-thumb:hover {
+  }
+  #volumeSlider::-webkit-slider-thumb:hover {
     background: #45a049;
-}
-#volumeSlider::-moz-range-thumb {
+  }
+  #volumeSlider::-moz-range-thumb {
     height: 30px;
     width: 30px;
     border-radius: 50%;
     background: #4CAF50;
     cursor: pointer;
     box-shadow: 0 0 5px rgba(0,0,0,0.2);
-}
-#volumeSlider::-moz-range-thumb:hover {
+  }
+  #volumeSlider::-moz-range-thumb:hover {
     background: #45a049;
-}
-#volumeSlider:focus {
+  }
+  #volumeSlider:focus {
     background: #bbb;
-}
-
-#restartButton {
+  }
+  
+  /* Start/Restart Buttons */
+  #restartButton {
     display: none;
     position: absolute;
     top: 50%;
@@ -305,9 +282,8 @@ body {
     border-radius: 8px;
     cursor: pointer;
     z-index: 3;
-}
-
-#startHtmlButton {
+  }
+  #startHtmlButton {
     display: none;
     position: absolute;
     top: 55%;
@@ -321,4 +297,5 @@ body {
     border-radius: 8px;
     cursor: pointer;
     z-index: 3;
-}
+  }
+  

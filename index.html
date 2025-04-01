@@ -20,7 +20,7 @@
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSy...",
+      apiKey: "AIzaSy...", /* your actual key */
       authDomain: "flappybird-f2511.firebaseapp.com",
       databaseURL: "https://flappybird-f2511-default-rtdb.europe-west1.firebasedatabase.app",
       projectId: "flappybird-f2511",
@@ -36,7 +36,6 @@
     window.firebaseRefs = { ref, push, set, get, query, orderByChild, equalTo, limitToLast };
   </script>
 </head>
-
 <body>
   <!-- Volume -->
   <div id="volumeControl">
@@ -57,45 +56,49 @@
     </div>
   </div>
 
-  <!-- Shop -->
-  <div id="shopContainer">
-    <h3>Shop</h3>
-    <p>Coins: <span id="coinDisplay">0</span></p>
-  
-    <div id="shopSkins">
-      <!-- Skin 1 -->
-      <div class="skinItem">
-        <button id="bird1Button">
-          Duck (Cost: 10)<br>
-          <img src="pictures/duck.png" alt="Duck">
-        </button>
-        <!-- Error message for Duck -->
-        <div class="errorMsg" id="duckError"></div>
-      </div>
-  
-      <!-- Skin 2 -->
-      <div class="skinItem">
-        <button id="bird2Button">
-          Twitter (Cost: 50)<br>
-          <img src="pictures/twitter.png" alt="Twitter">
-        </button>
-        <!-- Error message for Twitter -->
-        <div class="errorMsg" id="twitterError"></div>
-      </div>
-  
-      <!-- Skin 3 -->
-      <div class="skinItem">
-        <button id="bird3Button">
-          Black (Cost: 100)<br>
-          <img src="pictures/black.png" alt="Black">
-        </button>
-        <!-- Error message for Black -->
-        <div class="errorMsg" id="blackError"></div>
+  <!-- A single sideContainer pinned top-right -->
+  <div id="sideContainer">
+
+    <!-- Shop on top -->
+    <div id="shopContainer">
+      <h3>Shop</h3>
+      <p>Coins: <span id="coinDisplay">0</span></p>
+
+      <div id="shopSkins">
+        <!-- Skin 1 -->
+        <div class="skinItem">
+          <button id="bird1Button">
+            Duck (Cost: 10)<br>
+            <img src="pictures/duck.png" alt="Duck">
+          </button>
+          <div class="errorMsg" id="duckError"></div>
+        </div>
+        <!-- Skin 2 -->
+        <div class="skinItem">
+          <button id="bird2Button">
+            Twitter (Cost: 50)<br>
+            <img src="pictures/twitter.png" alt="Twitter">
+          </button>
+          <div class="errorMsg" id="twitterError"></div>
+        </div>
+        <!-- Skin 3 -->
+        <div class="skinItem">
+          <button id="bird3Button">
+            Black (Cost: 100)<br>
+            <img src="pictures/black.png" alt="Black">
+          </button>
+          <div class="errorMsg" id="blackError"></div>
+        </div>
       </div>
     </div>
-  </div>
-  
-  
+    
+    <!-- Achievements below the shop in normal flow -->
+    <div id="achievementsContainer">
+      <h3>Achievements</h3>
+      <ul id="achievementsList"></ul>
+    </div>
+
+  </div> <!-- end #sideContainer -->
 
   <!-- Canvas + Start button -->
   <div id="gameContainer">
