@@ -355,4 +355,9 @@ body {
       font-size: 12px;
     }
   }
+  @media (max-width: 768px) {
+    #sideContainer {
+      display: none;
+    }
+  }
   
