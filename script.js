@@ -172,20 +172,21 @@ sounds.bgMusic.volume = 0.02;
  * Resize Canvas
  ************************************************************/
 function resizeCanvas() {
-  const maxWidth = 1200, maxHeight = 800, aspectRatio = maxWidth / maxHeight;
-  let newWidth = window.innerWidth - 40;
-  let newHeight = window.innerHeight - 100;
-  if (newWidth > maxWidth) newWidth = maxWidth;
-  if (newHeight > maxHeight) newHeight = maxHeight;
-  if (newWidth / newHeight > aspectRatio) {
-    newWidth = newHeight * aspectRatio;
+  const aspectRatio = 1200 / 800;
+  let width = window.innerWidth;
+  let height = window.innerHeight;
+
+  if (width / height > aspectRatio) {
+    width = height * aspectRatio;
   } else {
-    newHeight = newWidth / aspectRatio;
+    height = width / aspectRatio;
   }
-  canvas.width = newWidth;
-  canvas.height = newHeight;
+
+  canvas.width = width;
+  canvas.height = height;
   drawInitialState();
 }
+
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
@@ -592,6 +593,19 @@ function addCanvasClickListener(){
     }
   });
 }
+/************************************************************
+ * Touch Controls
+ ************************************************************/
+function addTouchListeners() {
+  canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    if (!gameRunning) {
+      startGame();
+    } else {
+      birdJump();
+    }
+  }, { passive: false });
+}
 
 /************************************************************
  * Show/Hide Buttons
@@ -684,6 +698,8 @@ function initGame(){
   drawInitialState();
   addCanvasClickListener();
   setTimeout(displayLeaderboard,300);
+  addTouchListeners();
+
 
   // show coin + purchased skins
   updateCoinDisplay();

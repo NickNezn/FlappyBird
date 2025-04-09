@@ -84,7 +84,9 @@ body {
     padding: 10px;
     border: 2px solid #333;
     border-radius: 5px;
-    width: 60%;
+    width: 100%;
+    max-width: 300px;
+
     margin-bottom: 10px;
   }
   #startGameButton {
@@ -174,11 +176,13 @@ body {
     max-width: 100%;
   }
   #gameCanvas {
-    max-width: 90%;
+    width: 100%;
+    max-width: 1200px;
     height: auto;
     border: 1px solid #000;
     z-index: 1;
   }
+  
   
   /* Leaderboard pinned left middle */
   #leaderboard {
@@ -297,5 +301,58 @@ body {
     border-radius: 8px;
     cursor: pointer;
     z-index: 3;
+  }
+  @media (max-width: 768px) {
+    body {
+      background-position: top;
+    }
+  
+    #gameCanvas {
+      width: 100% !important;
+      height: auto !important;
+    }
+  
+    #volumeControl {
+      left: 10px;
+      top: 10px;
+      transform: scale(0.8);
+    }
+  
+    #leaderboard {
+      position: static;
+      margin: 20px auto;
+      transform: none;
+    }
+  
+    #sideContainer {
+      position: static;
+      width: 100%;
+      flex-direction: row;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  
+    #shopContainer, #achievementsContainer {
+      width: 90%;
+      margin: 10px;
+    }
+  
+    #nameInputForm {
+      width: 90%;
+    }
+  
+    #volumeSlider {
+      width: 200px;
+    }
+  
+    #startHtmlButton, #restartButton {
+      font-size: 16px;
+      padding: 10px 18px;
+    }
+  
+    .skinItem button {
+      width: 70px;
+      font-size: 12px;
+    }
   }
   
